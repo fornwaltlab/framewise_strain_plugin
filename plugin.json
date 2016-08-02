@@ -1,0 +1,9 @@
+{
+	"package": "framewise_denseanalysis",
+	"version": "0.1.0",
+	"description": "Plugin to compute strains for each frame independently",
+	"name": "Framewise Strain",
+	"author": "Christopher Haggerty",
+	"email": "chris.m.haggerty@gmail.com",
+	"url": "https:\/\/github.com\/chaggerty\/framewise_denseanalysis"
+}

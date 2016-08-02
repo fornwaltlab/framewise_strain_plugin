@@ -1,0 +1,8 @@
+{
+	"updater": {
+		"type": "commit",
+		"branch": "master",
+		"checked": 736543.4071,
+		"version": "3cffeb7d2394f60178c689903579a0eec1daa53e"
+	}
+}
