@@ -61,7 +61,7 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
 
             strains = [];
             FV = [];
-            
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%
             if data.spl.TemporalOrder>0 %if spline data have temporal smoothing
                 didx = data.UIDtoIndexDENSE(data.spl.DENSEUID);
@@ -171,7 +171,7 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
                     end
 
                 end
-                
+
             % If the user doesn't provide any position information, bring up dialog
                 if isempty(api.PositionA) && fr == 1 && ~strcmp(api.Type,'curve')
                     inputs.CardiacModelPanel = true;
@@ -184,10 +184,13 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
                 inputs.Type             = api.Type;
                 inputs.Mag              = api.Mag;
 
+                %generate mask for contours
+                [X,Y] = meshgrid(xi,yi);
+                mask = data.spl.MaskFcn(X,Y,inputs.RestingContour);
 
             % Evaluate and store as inputs in case the user had to use cardiacmodel
                 inputs = spl2patch(inputs);
-
+                inputs.mask=mask;
                 % Store the resting meshes in a structure
                 FV = cat(1, FV, inputs);
 
@@ -202,45 +205,30 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
 
                 if any(strcmpi(api.Type,{'open','closed'}))
                     str = contourstrain(straininputs);
-                   
-
                 else
                     str = patchstrain(straininputs);
-                    %str = rmfield(str,{'vertices','faces','orientation'});
-
-                    %pixapi = spl2pixel(inputs);
-                    %strpix = pixelstrain(inputs,pixapi);
-
-                    %fvpix  = struct('vertices',strpix.vertices,...
-                     %   'faces',strpix.faces,'orientation',strpix.orientation,...
-                     %   'maskimage',strpix.maskimage);
-                    %strpix = rmfield(strpix,fieldnames(fvpix));
-                    %pix_strain = cat(1,pix_strain,strpix);
-                    %pix_fv = cat(1,pix_fv,fvpix);
                 end
                 strains = cat(1,strains,str);
 
             end
 
-            % Merge all strains into standard format
-            
             strains(1).Nmodel = inputs.Nmodel;
             strains(1).PositionA = inputs.PositionA;
             strains(1).PositionB = inputs.PositionB;
             strains(1).Clockwise = inputs.Clockwise;
-            exportFcn(data,strains);
+            exportFcn(data,strains,FV);
 
         end
     end
 end
 
-function exportFcn(data, strain)
+function exportFcn(data, strain,fv)
 %copied from AnalysisViewer to maintain consistency of output
 
     startpath = pwd;
     obj.hdata = data; %for handle consistency
     obj.straindata = strain;
-    
+
 
     % DENSE & ROI indices
     duid = obj.hdata.spl.DENSEUID;
@@ -419,6 +407,7 @@ function exportFcn(data, strain)
     out.DENSEInfo = DENSEInfo;
     out.SequenceInfo = SequenceInfo;
     out.StrainInfo = obj.straindata;
+    out.MaskInfo = fv;
     out.AnalysisInstanceUID = AnalysisInstanceUID; %#ok<STRNU>
 
     save(file, '-struct', 'out')
