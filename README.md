@@ -9,7 +9,7 @@ Plugin to compute strains for each frame independently
 After installation of *DENSEanalysis*, run the following from the MATLAB command line:
 
 ```matlab
-plugins.PluginManager.import('https://github.com/chaggerty/dense_framewise_strain_plugin')
+plugins.PluginManager.import('https://github.com/fornwaltlab/framewise_strain_plugin')
 ```
 
 ## Credits
