@@ -6,7 +6,7 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
     %   h/t to Jonathan Suever and Gregory Wehner for writing the initial
     %   implementation of this function
     %
-    % Copyright (c) 2016, Christopher Haggerty
+    % Copyright (c) 2016, Cardiac Imaging Technology Lab
 
     methods
         function validate(~, data)
