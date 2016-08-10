@@ -187,8 +187,8 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
                 %generate mask for contours
                 [X,Y] = meshgrid(xi,yi);
                 mask = data.spl.MaskFcn(X,Y,inputs.RestingContour);
-
             % Evaluate and store as inputs in case the user had to use cardiacmodel
+            
                 inputs = spl2patch(inputs);
                 inputs.mask=mask;
                 % Store the resting meshes in a structure
@@ -328,10 +328,10 @@ function exportFcn(data, strain,fv)
 
     % segment model & orientation
     if any(strcmpi(obj.hdata.spl.ROIType,{'sa','la'}))
-        AnalysisInfo.Nmodel    = obj.straindata.Nmodel;
-        AnalysisInfo.PositionA = obj.straindata.PositionA;
-        AnalysisInfo.PositionB = obj.straindata.PositionB;
-        AnalysisInfo.Clockwise = obj.straindata.Clockwise;
+        AnalysisInfo.Nmodel    = obj.straindata(1).Nmodel;
+        AnalysisInfo.PositionA = obj.straindata(1).PositionA;
+        AnalysisInfo.PositionB = obj.straindata(1).PositionB;
+        AnalysisInfo.Clockwise = obj.straindata(1).Clockwise;
     end
 
     % DENSE group information
@@ -396,7 +396,11 @@ function exportFcn(data, strain,fv)
 
         DisplacementInfo.Angle = theta(:);
     end
-
+    
+    %remove duplicate fields
+    obj.straindata = rmfield(obj.straindata,{'Nmodel','PositionA',...
+        'PositionB','Clockwise'});
+    
     % export file
     AnalysisInstanceUID = dicomuid;
 
