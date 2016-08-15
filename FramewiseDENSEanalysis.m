@@ -173,7 +173,7 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
                 end
 
             % If the user doesn't provide any position information, bring up dialog
-                if isempty(api.PositionA) && fr == 1 && ~strcmp(api.Type,'curve')
+                if isempty(api.PositionA) && fr == frrng(1) && ~strcmp(api.Type,'curve')
                     inputs.CardiacModelPanel = true;
                 else
                     inputs.CardiacModelPanel = false;
@@ -188,7 +188,7 @@ classdef FramewiseDENSEanalysis < plugins.DENSEanalysisPlugin
                 [X,Y] = meshgrid(xi,yi);
                 mask = data.spl.MaskFcn(X,Y,inputs.RestingContour);
             % Evaluate and store as inputs in case the user had to use cardiacmodel
-            
+
                 inputs = spl2patch(inputs);
                 inputs.mask=mask;
                 % Store the resting meshes in a structure
@@ -396,11 +396,11 @@ function exportFcn(data, strain,fv)
 
         DisplacementInfo.Angle = theta(:);
     end
-    
+
     %remove duplicate fields
     obj.straindata = rmfield(obj.straindata,{'Nmodel','PositionA',...
         'PositionB','Clockwise'});
-    
+
     % export file
     AnalysisInstanceUID = dicomuid;
 
